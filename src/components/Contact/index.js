@@ -1,20 +1,40 @@
 import React, { useState } from "react";
 
+import { validateEmail } from "../../utils/helpers";
+
 function ContactForm() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
   const { name, email, message } = formState;
 
   function handleSubmit(e) {
     e.preventDefault();
+      setFormState({ ...formState, name: e.target.value });
     console.log(formState);
   }
 
-function handleChange(e) {
-  setFormState({ ...formState, name: e.target.value });
+  function handleChange(e) {
+  if (e.target.name === "email") {
+    const isValid = validateEmail(e.target.value);
+    console.log(isValid);
+    // isValid conditional statement
+    if (!isValid) {
+      setErrorMessage("Your email is invalid.");
+    } else {
+      setErrorMessage("");
+    }
+  } else {
+    if (!e.target.value.length) {
+      setErrorMessage(`${e.target.name} is required.`);
+    } else {
+      setErrorMessage("");
+    }
+  }
+    console.log("errorMessage", errorMessage);
 }
 
 console.log(formState);
@@ -52,6 +72,11 @@ console.log(formState);
             rows="5"
           />{" "}
         </div>
+        {errorMessage && (
+          <div>
+            <p className="error-text">{errorMessage}</p>
+          </div>
+        )}
         <button type="submit">Submit</button>
       </form>
     </section>
